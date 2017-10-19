@@ -23,34 +23,37 @@ function(input, output,session) {
 	fileLocate<-function(filename){
 		file.path(foldLocate(),filename)
 	}
-#	for(tool in unique(all_parameters$profile_value[all_parameters$profile==page & all_parameters$profile_key=="tools"])){
-#		do.call(paste(tool,"prepareData",sep="."),list(input=input))
-#		do.call(paste(tool,"preparePlot",sep="."),list(input=input,output=output))
-#	}
-#	do.call("prepareData",list(input=input))
-#	output$ttt<-renderText({
-#		foldLocate()
-
-#	})
 
   output$subfolder<-  renderUI({
+	 if(userRole()=="subscriber"){
       selectInput("subfolder", "Sub Cateories", unique(all_parameters$subfolder[all_parameters$mainfold==input$mainfolder]))
+	  }
+		else{
+		h5("unauthorized user")
+
+		}
   })
   output$level<-  renderUI({
-	 if(input$group_by=="noon"){
+	 if(input$group_by=="none"){
 			h5("All samples")
 	  }
 	else{
       selectInput("level", "Level", levels(sampleInfo[,input$group_by]))
 	}
   })
+    userRole <- reactive({"subscriber" }) 
   output$sample<-  renderUI({
+	 if(userRole()=="subscriber"){
 	query <- parseQueryString(session$clientData$url_search)
-	 if(input$group_by=="noon"){
-      	selectInput("sample", "Sample", row.names(sampleInfo),selected=query["sample"])
+	 if(input$group_by=="none"){
+      	selectInput("sample", "Sample", sampleIDs,selected=sampleIDs[query$sample])
 	  }
 	else{
-      selectInput("sample", "Sample", row.names(sampleInfo)[sampleInfo[,input$group_by]==input$level])
+      selectInput("sample", "Sample", sampleIDs[sampleInfo[,input$group_by]==input$level])
+	}
+	}
+	else{
+		h5("unauthorized user")
 	}
   })
   output$dynamicTabPanel=renderUI({

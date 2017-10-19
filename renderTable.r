@@ -35,11 +35,12 @@ renderTable.sidebarPanel<-function(profile,input){
  		mdata<-melt(mdata,id=colnames(sampleInfo))
 		z <- unsplit(lapply(split(mdata$value, mdata$variable), scale), mdata$variable)
 		mdata$zscore=z
+		mdata$none="all"
 		mdata
 	})
 	sample.data <- reactive({
 		share.data=share.data()
-		share.data[share.data$SampleID==input$sample,!(colnames(share.data) %in%colnames(sampleInfo))]
+		share.data[share.data$SampleID==input$sample,!(colnames(share.data) %in% c("none",colnames(sampleInfo)))]
 
 	})
 #}
