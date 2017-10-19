@@ -35,11 +35,23 @@ renderTable.sidebarPanel<-function(profile,input){
  		mdata<-melt(mdata,id=colnames(sampleInfo))
 		z <- unsplit(lapply(split(mdata$value, mdata$variable), scale), mdata$variable)
 		mdata$zscore=z
+		mdata$none="all"
 		mdata
 	})
 	sample.data <- reactive({
 		share.data=share.data()
-		share.data[share.data$SampleID==input$sample,!(colnames(share.data) %in%colnames(sampleInfo))]
+		share.data[share.data$SampleID==input$sample,!(colnames(share.data) %in% c("none",colnames(sampleInfo)))]
+
+	})
+	standard.data<-reactive({
+		if(file.exists(fileLocate("standard.csv"))){
+			sdata<-read.csv(fileLocate("standard.csv"))
+			colnames(sdata)[1]="variable"
+			sdata
+		}
+		else{
+			NULL
+		}
 
 	})
 #}
@@ -48,6 +60,16 @@ renderTable.sidebarPanel<-function(profile,input){
 
 	output$renderTable.table<- renderDataTable({
 		data=sample.data()
+		sdata=standard.data()
+		if(!is.null(sdata)){
+			data<-merge(data,sdata,all.x=T)
+			if("Reference.Range.Low" %in% colnames(data)){
+				data$low=data$value < data$Reference.Range.Low
+			}
+			if("Reference.Range.High" %in% colnames(data)){
+				data$high=data$value > data$Reference.Range.High
+			}
+		}
 		colnames(data)[colnames(data)=="variable"]="Test"
 		data
 

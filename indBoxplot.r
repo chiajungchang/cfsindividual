@@ -26,6 +26,7 @@ indBoxplot.tabPanel<-function(profile){
 }
 indBoxplot.sidebarPanel<-function(profile,input,session){
 	conditionalPanel(condition = "input.tabs1 == 'Box Plot'",
+		h5("The box plots only show measurements with statistically significant differences between the groups, defined by \"Group by\", if the number of measurements is larger than 32. The data point of the selected individual is highlighted by a triangular mark in each box plot."),
         #h4(paste(nrow(profile),"rows")),h5(title),h5(subtitle),
 		h5(profile$profile_value[profile$profile_key=="desc"])
 	)
