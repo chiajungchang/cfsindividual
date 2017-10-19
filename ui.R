@@ -5,7 +5,7 @@ fluidPage(
   # Application title
 	titlePanel("Visualization of Individual Datasets for the End ME/CFS Project"),
     HTML(' <input type="text" id="userRole" name="userRole" style="display: none;"> '),
-    includeScript("get_user_id.js"),    
+#    includeScript("get_user_id.js"),    
 
   # Sidebar with a slider input for the number of bins
 	sidebarLayout(
